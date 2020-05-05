@@ -27,7 +27,7 @@ def scored():
     global timez
     # s.ontimer(scored, None)
     # print("+")
-    score.goto(351, 240)
+    score.goto(351, 250)
     score.clear()
     if not WON:
         score.write(timez, False, align="center", font=("Dubai Medium", 25))
@@ -38,7 +38,7 @@ def scored():
 def win():
     global WON
     try:
-        print(trueMines, flagged)
+        # print(trueMines, flagged)
         if all([True if (x[0] + MULT / 2, x[1] + MULT / 2) in [y[0] for y in trueMines] else False for x in flagged]) and flagged != {} and len(flagged) == len(trueMines):
             t.goto(0, 0)
             if not WON:
@@ -48,8 +48,8 @@ def win():
                 s.ontimer(end, 5000)
             WON = True
 
-        else:
-            print([y[0] for y in trueMines])
+        # else:
+        #     print([y[0] for y in trueMines])
     except:
         pass
     finally:
@@ -124,14 +124,14 @@ def run():
 
     mines = [True if randint(1, 100) <= PROB + 1 else False for i in range(len(allSquares))]
     numMines = sum([1 for x in mines if x])
-    print(numMines)
+    # print(numMines)
 
     '''
     mines is a dictionary: {(x, y):mine status}
     '''
     mines = list(zip(allSquares, mines, [0 for i in range(len(allSquares))]))
     trueMines = [x for x in mines if x[1]]
-    print(trueMines)
+    # print(trueMines)
 
 def getNear(x, y):
     n = 0
@@ -258,7 +258,7 @@ def switch():
     else:
         FLAGGING = True
         flagon()
-    print(FLAGGING)
+    # print(FLAGGING)
     # s.onkey(switch, "c")
 
 def handleRight(x, y):
