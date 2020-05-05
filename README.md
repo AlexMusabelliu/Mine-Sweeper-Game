@@ -1,4 +1,3 @@
-# Mine-Sweeper-Game
 Simple mine sweeper game.
 -----
 Left click to reveal a square it.
