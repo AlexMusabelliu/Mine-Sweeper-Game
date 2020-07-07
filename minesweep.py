@@ -7,12 +7,17 @@ t = Turtle('square', visible=False)
 s = Screen()
 # s.tracer(False)
 t.pu()
+
 flag = Turtle('circle', visible=False)
 flag.pu()
+
 score = Turtle(visible=False)
 score.pu()
+
 numFlag = Turtle(visible=False)
 numFlag.pu()
+numFlag.setheading(90)
+numFlag.shapesize(0.8)
 
 timez = 1
 WON = False
@@ -22,14 +27,41 @@ MULT = 600 / SIZE
 PROB = 20
 FCOLOR = "red"
 FSHAPE = "triangle"
+WRITE_OFFSETY = -SIZE / 2
+WRITE_OFFSETX = -2
+BG_COLOR = "lightgrey"
+OUTLINE_COLOR = "black"
+TEXT_COLOR = "pink"
+REVEAL_COLOR = "white"
+EMPTY_TEXT = None
+
+def set_shape(obj):
+    obj.shape(FSHAPE)
+    obj.setheading(90)
+    obj.shapesize(0.8)
+
+def choose_theme(choice):
+    global FCOLOR, FSHAPE, OUTLINE_COLOR, TEXT_COLOR, BG_COLOR, REVEAL_COLOR, EMPTY_TEXT
+    
+    if choice == 0:
+        FCOLOR = "lightgreen"
+        FSHAPE = "triangle"
+        OUTLINE_COLOR = "lightgreen"
+        TEXT_COLOR = "lightgreen"
+        BG_COLOR = "black"
+        REVEAL_COLOR = "black"
+        EMPTY_TEXT = ""
+
+choose_theme(0)
 
 def scored():
     global timez
     # s.ontimer(scored, None)
     # print("+")
-    score.goto(351, 250)
+    score.goto(340, 250)
     score.clear()
     if not WON:
+        score.color(TEXT_COLOR)
         score.write(timez, False, align="center", font=("Dubai Medium", 25))
         timez += 1
         s.update()
@@ -58,14 +90,12 @@ def win():
 def showFlags(numMines):
     # global numMines
     X, Y = (350, 210)
-    numFlag.goto(X, Y + 28)
+    numFlag.goto(X - 10, Y + 16)
     numFlag.clear()
     numFlag.shape(FSHAPE)
-    numFlag.color("red")
-    numFlag.setheading(90)
-    numFlag.shapesize(0.8)
+    numFlag.color(FCOLOR)
     numFlag.stamp()
-    numFlag.color("black")
+    numFlag.color(TEXT_COLOR)
     numFlag.goto(X + 25 + 5 * len(str(numMines)), Y)
     numFlag.write(numMines, False, align="center", font=("Dubai Medium", 25))
     s.update()
@@ -78,18 +108,18 @@ def draw(color):
 def flagon():
     global flagStamp
     flag.color(FCOLOR)
-    flag.goto(350, 300)
+    flag.goto(340, 300)
     flagStamp = flag.stamp()
 
 def flagoff():
     global flagStamp
     flag.color(FCOLOR)
-    flag.goto(350, 300)
+    flag.goto(340, 300)
     flag.shapesize(1.15)
     flag.stamp()
     flag.color(FCOLOR, "white")
     flag.shapesize(1)
-    flag.goto(350, 300)
+    flag.goto(340, 300)
     try:
         flag.clearstamp(flagStamp)
     except: pass
@@ -102,9 +132,9 @@ def run():
     t.goto(0, 0)
     t.shapesize(30)
 
-    draw('grey')
+    draw(BG_COLOR)
     
-    t.color('black')
+    t.color(OUTLINE_COLOR)
 
     allSquares = []
 
@@ -185,9 +215,7 @@ def clicked(x, y):
                     if FLAGGING:
                         t.shapesize(30 * 0.95 / SIZE)
                         # print(t.pos(), flagged, t.pos() in flagged)
-                        t.shape(FSHAPE)
-                        t.setheading(0)
-                        t.shapesize(0.8)
+                        set_shape(t)
                         if t.pos() not in flagged and numMines != 0:
                             t.color(FCOLOR)
                             flagged.update({t.pos():t.stamp()})
@@ -206,12 +234,15 @@ def clicked(x, y):
                         t.shape("square")
                         t.setheading(0)
                         if t.pos() not in flagged:
-                            t.color("white")
+                            t.color(REVEAL_COLOR)
                             t.shapesize(30 * 0.95/SIZE)
                             t.stamp()
                             # s.update()
-                            t.color("black")
-                            if nearest != 0: t.write(nearest)
+                            t.color(TEXT_COLOR)
+                            prev = t.pos()
+                            t.goto(t.xcor() + WRITE_OFFSETX, t.ycor() + WRITE_OFFSETY)
+                            if nearest != 0 or EMPTY_TEXT: t.write(nearest if nearest != 0 else EMPTY_TEXT, False, "left", ("Comic Sans MS", 10, "bold"))
+                            t.goto(prev)
                             PLACE = mines.index(((a, b), isMine, popped))
                             mines.pop(PLACE)
                             mines.insert(PLACE, ((a, b), isMine, True))
@@ -234,12 +265,15 @@ def reveal(x, y):
                     flagged.pop(t.pos())
                     numMines += 1
                     showFlags(numMines)
-                t.color("white")
+                t.color(REVEAL_COLOR)
                 t.shape("square")
                 t.shapesize(30 * 0.95/SIZE)
                 t.stamp()
-                t.color("black")
-                if nearest != 0: t.write(nearest)
+                t.color(TEXT_COLOR)
+                prev = t.pos()
+                t.goto(t.xcor() + WRITE_OFFSETX, t.ycor() + WRITE_OFFSETY)
+                if nearest != 0 or EMPTY_TEXT: t.write(nearest if nearest != 0 else EMPTY_TEXT, False, "left", ("Comic Sans MS", 10, "bold"))
+                t.goto(prev)
                 PLACE = mines.index(((a, b), isMine, popped))
                 mines.pop(PLACE)
                 mines.insert(PLACE, ((a, b), isMine, True))
